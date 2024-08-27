@@ -2,51 +2,75 @@ using System;
 using profsysinf.Core.Entities;
 using profsysinf.Core.Events;
 using profsysinf.Core.Exceptions;
+using projsysinf.Application.Events;
 using projsysinf.Core.Aggregates;
 
-namespace profsysinf.Core.Aggregates;
-
-public class User : AggregateRoot
+namespace profsysinf.Core.Aggregates
 {
-    private const int MaxFailedLoginAttempts = 3;
-    private int _failedLoginAttemts;
-    private DateTime? _lockoutEnd;
-    
-    public int IdUser { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public bool IsActive { get; set; }
-    public ICollection<Log> Logs { get; set; }
-    public ICollection<PasswordHistory> PasswordHistories { get; set; }
-
-    public void SignIn(string password)
+    public class User : AggregateRoot
     {
-        if (!IsActive)
+        private const int MaxFailedLoginAttempts = 3;
+        public DateTime? _lockoutEnd;
+
+        public int IdUser { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public bool IsActive { get; set; } = true;
+        public int FailedLoginAttempts { get; set; } = 0; 
+        public ICollection<Log> Logs { get; set; }
+        public ICollection<PasswordHistory> PasswordHistories { get; set; }
+        
+
+        public void SignIn(string password)
         {
-            throw new UserIsLockedException();
+            if (_lockoutEnd.HasValue && _lockoutEnd > DateTime.UtcNow.AddHours(2))
+            {
+                throw new UserIsLockedException();
+            }
+            
+            if (_lockoutEnd.HasValue && _lockoutEnd <= DateTime.UtcNow.AddHours(2))
+            {
+                ResetFailedLoginAttempts();
+            }
+            
+            if (!VerifyPassword(password))
+            {
+                RegisterFailedLoginAttempt();
+                AddDomainEvent(new UserFailedLoginEvent(IdUser));
+                throw new InvalidPasswordException();
+            }
+
+            ResetFailedLoginAttempts();
+            AddDomainEvent(new UserSignedInEvent(IdUser));
         }
 
-        ResetFailedLoginAttempts();
-        AddDomainEvent(new UserSignedInEvent(IdUser));
-    }
-
-    public void RegisterFailedLoginAttempt()
-    {
-        _failedLoginAttemts++;
-        if (_failedLoginAttemts >= MaxFailedLoginAttempts)
+        private bool VerifyPassword(string password)
         {
-            Lock();
+            return Password == password;
         }
-    }
 
-    private void Lock()
-    {
-        _lockoutEnd = DateTime.UtcNow.AddMinutes(3);
-    }
+        public void RegisterFailedLoginAttempt()
+        {
+            FailedLoginAttempts++;
 
-    private void ResetFailedLoginAttempts()
-    {
-        _failedLoginAttemts = 0;
-        _lockoutEnd = null;
+            if (FailedLoginAttempts >= MaxFailedLoginAttempts)
+            {
+                Lock();
+            }
+        }
+
+        private void Lock()
+        {
+            _lockoutEnd = DateTime.UtcNow.AddMinutes(3);
+            IsActive = false;
+            AddDomainEvent(new UserLockedOutEvent(IdUser));
+        }
+
+        public void ResetFailedLoginAttempts()
+        {
+            FailedLoginAttempts = 0;
+            _lockoutEnd = null;
+            IsActive = true;
+        }
     }
 }

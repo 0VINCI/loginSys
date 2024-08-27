@@ -17,10 +17,10 @@ namespace projsysinf.Infrastructure.Repositories
         {
             return await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
         }
-    
+
         public async Task SaveAsync(User user)
         {
-            _context.Users.Update(user);
+            _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
     }

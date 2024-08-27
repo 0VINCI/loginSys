@@ -2,8 +2,10 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using profsysinf.Core.Events;
 using profsysinf.Core.Repositories;
 using projsysinf.Application.Commands;
+using projsysinf.Application.Events;
 using projsysinf.Application.Services;
 using projsysinf.Infrastructure;
 using projsysinf.Infrastructure.Repositories;
@@ -25,6 +27,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();
+builder.Services.AddScoped<IEventHandler<UserSignedInEvent>, UserSignedInEventHandler>();
+builder.Services.AddScoped<IEventHandler<UserSignedInEvent>, UserSignedInEventHandler>();
+builder.Services.AddScoped<IEventHandler<UserFailedLoginEvent>, UserFailedLoginEventHandler>();
+builder.Services.AddScoped<IEventHandler<UserLockedOutEvent>, UserLockedOutEventHandler>();
 
 builder.Services.AddAuthentication(options =>
     {
