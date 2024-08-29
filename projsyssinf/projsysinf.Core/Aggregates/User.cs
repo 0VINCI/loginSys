@@ -16,10 +16,10 @@ namespace profsysinf.Core.Aggregates
         public string Email { get; set; }
         public string Password { get; set; }
         public bool IsActive { get; set; } = true;
-        public int FailedLoginAttempts { get; set; } = 0; 
-        public ICollection<Log> Logs { get; set; }
-        public ICollection<PasswordHistory> PasswordHistories { get; set; }
-        
+        public int FailedLoginAttempts { get; set; } = 0;
+        public ICollection<Log> Logs { get; set; } = new List<Log>();
+        public ICollection<PasswordHistory> PasswordHistories { get; set; } = new List<PasswordHistory>();
+
 
         public void SignIn(string password)
         {
@@ -27,12 +27,12 @@ namespace profsysinf.Core.Aggregates
             {
                 throw new UserIsLockedException();
             }
-            
+
             if (_lockoutEnd.HasValue && _lockoutEnd <= DateTime.UtcNow.AddHours(2))
             {
                 ResetFailedLoginAttempts();
             }
-            
+
             if (!VerifyPassword(password))
             {
                 RegisterFailedLoginAttempt();
@@ -71,6 +71,18 @@ namespace profsysinf.Core.Aggregates
             FailedLoginAttempts = 0;
             _lockoutEnd = null;
             IsActive = true;
+        }
+
+        public void Register(string password)
+        {
+            Password = password;
+            
+            PasswordHistories.Add(new PasswordHistory
+            {
+                Password = Password,
+                Tmstmp = DateTime.UtcNow
+            });
+            AddDomainEvent(new UserRegisterEvent(IdUser));
         }
     }
 }

@@ -25,5 +25,14 @@ namespace projsysinf.Api.Controllers
 
             return Ok();
         }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+        {
+            var command = new RegisterCommand(dto.Email, dto.Password, dto.ConfirmPassword);
+            var result = await commandDispatcher.SendAsync<RegisterCommand, string>(command);
+            
+            return Ok(result);
+        }
+
     }
 }

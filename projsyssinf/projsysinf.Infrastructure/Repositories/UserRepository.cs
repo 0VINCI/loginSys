@@ -20,7 +20,15 @@ namespace projsysinf.Infrastructure.Repositories
 
         public async Task SaveAsync(User user)
         {
-            _context.Entry(user).State = EntityState.Modified;
+            if (user.IdUser == 0)
+            {
+                _context.Users.Add(user);
+            }
+            else
+            {
+                _context.Users.Update(user);
+            }
+    
             await _context.SaveChangesAsync();
         }
     }
