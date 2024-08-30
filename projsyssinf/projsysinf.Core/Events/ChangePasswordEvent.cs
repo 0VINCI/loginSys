@@ -1,6 +1,8 @@
+using System;
+
 namespace profsysinf.Core.Events;
 
-public class UserLockedOutEvent(int userId) : IDomainEvent
+public class ChangePasswordEvent(int userId) : IDomainEvent
 {
     public int UserId { get; } = userId;
     public DateTime OccurredOn { get; } = DateTime.UtcNow;

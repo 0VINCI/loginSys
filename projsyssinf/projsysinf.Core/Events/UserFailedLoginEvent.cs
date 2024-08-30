@@ -3,14 +3,9 @@ using profsysinf.Core.Events;
 
 namespace projsysinf.Application.Events
 {
-    public class UserFailedLoginEvent : IDomainEvent
+    public class UserFailedLoginEvent(int userId) : IDomainEvent
     {
-        public int UserId { get; }
+        public int UserId { get; } = userId;
         public DateTime OccurredOn { get; } = DateTime.UtcNow;
-
-        public UserFailedLoginEvent(int userId)
-        {
-            UserId = userId;
-        }
     }
 }

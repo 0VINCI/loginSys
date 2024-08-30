@@ -1,21 +1,12 @@
-using System.Threading.Tasks;
 using profsysinf.Core.Aggregates;
 using projsysinf.Infrastructure;
-using profsysinf.Core.Entities;
 using profsysinf.Core.Events;
 using projsysinf.Application.Events;
 
 namespace projsysinf.Application.Services
 {
-    public class UserRegisterEventHandler : IEventHandler<UserRegisterEvent>
+    public class UserRegisterEventHandler(ApplicationDbContext context) : IEventHandler<UserRegisterEvent>
     {
-        private readonly ApplicationDbContext _context;
-
-        public UserRegisterEventHandler(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task HandleAsync(UserRegisterEvent eventItem)
         {
             var log = new Log
@@ -25,8 +16,8 @@ namespace projsysinf.Application.Services
                 Tmstmp = eventItem.OccurredOn
             };
 
-            _context.Logs.Add(log);
-            await _context.SaveChangesAsync();
+            context.Logs.Add(log);
+            await context.SaveChangesAsync();
         }
     }
 }

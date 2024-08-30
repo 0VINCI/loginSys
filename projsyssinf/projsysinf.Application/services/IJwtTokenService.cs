@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace projsysinf.Application.Services
 {
     public interface IJwtTokenService

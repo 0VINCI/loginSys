@@ -33,6 +33,15 @@ namespace projsysinf.Api.Controllers
             
             return Ok(result);
         }
+        [HttpPost("changePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            var command = new ChangePasswordCommand(dto.Email, dto.OldPassword, dto.NewPassword);
+            var result = await commandDispatcher.SendAsync<ChangePasswordCommand, string>(command);
+            
+            return Ok(result);
+        }
+
 
     }
 }

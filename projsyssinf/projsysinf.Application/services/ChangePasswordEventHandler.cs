@@ -1,17 +1,18 @@
 using profsysinf.Core.Aggregates;
 using projsysinf.Infrastructure;
+using profsysinf.Core.Events;
 using projsysinf.Application.Events;
 
 namespace projsysinf.Application.Services
 {
-    public class UserFailedLoginEventHandler(ApplicationDbContext context) : IEventHandler<UserFailedLoginEvent>
+    public class ChangePasswordEventHandler(ApplicationDbContext context) : IEventHandler<ChangePasswordEvent>
     {
-        public async Task HandleAsync(UserFailedLoginEvent eventItem)
+        public async Task HandleAsync(ChangePasswordEvent eventItem)
         {
             var log = new Log
             {
                 UserId = eventItem.UserId,
-                OperationTypeId = 3,
+                OperationTypeId = 4,
                 Tmstmp = eventItem.OccurredOn
             };
 

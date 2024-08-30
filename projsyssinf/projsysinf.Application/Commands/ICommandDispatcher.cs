@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace projsysinf.Application.Commands
 {
     public interface ICommandDispatcher

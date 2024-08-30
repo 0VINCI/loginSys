@@ -5,10 +5,8 @@ using projsysinf.Core.Aggregates;
 
 namespace projsysinf.Infrastructure
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-
         public DbSet<User> Users { get; set; }
         public DbSet<DicOperationType> DicOperationTypes { get; set; }
         public DbSet<Log> Logs { get; set; }
