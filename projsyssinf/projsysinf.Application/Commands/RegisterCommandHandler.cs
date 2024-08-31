@@ -27,7 +27,6 @@ namespace projsysinf.Application.Commands
             {
                 Email = command.Email,
                 Password = command.Password,
-                IsActive = true
             };
             
             newUser.Register(command.Password);

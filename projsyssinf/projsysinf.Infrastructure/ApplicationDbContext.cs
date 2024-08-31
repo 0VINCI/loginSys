@@ -22,7 +22,6 @@ namespace projsysinf.Infrastructure
                 entity.HasIndex(u => u.Email).IsUnique();
                 entity.Property(u => u.Email).HasMaxLength(255).IsRequired();
                 entity.Property(u => u.Password).HasMaxLength(255).IsRequired();
-                entity.Property(u => u.IsActive).IsRequired();
             });
 
             modelBuilder.Entity<DicOperationType>(entity =>

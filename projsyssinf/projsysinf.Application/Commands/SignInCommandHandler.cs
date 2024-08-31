@@ -10,8 +10,6 @@ namespace projsysinf.Application.Commands
             IEventDispatcher eventDispatcher)
         : ICommandHandler<SignInCommand, string>
     {
-        public DateTime? _lockoutEnd;
-
         public async Task<string> HandleAsync(SignInCommand command)
         {
             var user = await userRepository.GetByEmailAsync(command.Email);
@@ -19,29 +17,21 @@ namespace projsysinf.Application.Commands
             {
                 throw new UserNotFoundException();
             }
-            
-            if (!user.IsActive && user._lockoutEnd.HasValue && user._lockoutEnd <= DateTime.UtcNow.AddHours(2))
+
+            var lastFailedLogin = await userRepository.GetLastFailedLoginAsync(user.IdUser);
+
+            if (user.FailedLoginAttempts >= 2 && lastFailedLogin.HasValue && lastFailedLogin.Value.AddMinutes(3) > DateTime.UtcNow)
             {
-                user.ResetFailedLoginAttempts();
-                await userRepository.SaveAsync(user);
+                var lockedOutEvent = new UserLockedOutEvent(user.IdUser);
+                await eventDispatcher.DispatchAsync(lockedOutEvent);
+                throw new UserIsLockedException();
             }
-            
+
             try
             {
-                var isPasswordValid = VerifyPassword(command.Password, user.Password);
-                if (!isPasswordValid)
-                {
-                    user.RegisterFailedLoginAttempt();
-                    await userRepository.SaveAsync(user);
-                    throw new InvalidPasswordException();
-                }
-                if (!user.IsActive && user._lockoutEnd.HasValue && user._lockoutEnd <= DateTime.UtcNow.AddHours(2))
-                {
-                    user.ResetFailedLoginAttempts();
-                    await userRepository.SaveAsync(user);
-                }
-
                 user.SignIn(command.Password);
+                await userRepository.SaveAsync(user);
+
                 var signInEvent = new UserSignedInEvent(user.IdUser);
                 await eventDispatcher.DispatchAsync(signInEvent);
             }
@@ -49,21 +39,10 @@ namespace projsysinf.Application.Commands
             {
                 await userRepository.SaveAsync(user);
                 await eventDispatcher.DispatchAsync(new UserFailedLoginEvent(user.IdUser));
-                if (!user.IsActive)
-                {
-                    await eventDispatcher.DispatchAsync(new UserLockedOutEvent(user.IdUser));
-                }
-
                 throw;
             }
 
-            await userRepository.SaveAsync(user);
             return jwtTokenService.GenerateToken(user.IdUser.ToString(), user.Email, new[] { "User" });
-        }
-
-        private bool VerifyPassword(string inputPassword, string storedPassword)
-        {
-            return inputPassword == storedPassword;
         }
     }
 }

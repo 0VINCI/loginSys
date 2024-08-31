@@ -31,5 +31,15 @@ namespace projsysinf.Infrastructure.Repositories
     
             await context.SaveChangesAsync();
         }
+        public async Task<DateTime?> GetLastFailedLoginAsync(int userId)
+        {
+            var lastFailedLog = await context.Logs
+                .Where(log => log.UserId == userId && log.OperationTypeId == 3)
+                .OrderByDescending(log => log.Tmstmp)
+                .FirstOrDefaultAsync();
+
+            return lastFailedLog?.Tmstmp;
+        }
+
     }
 }
