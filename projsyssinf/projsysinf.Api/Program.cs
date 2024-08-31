@@ -22,6 +22,10 @@ builder.Services.AddScoped<ICommandHandler<SignInCommand, string>, SignInCommand
 
 builder.Services.AddScoped<ICommandHandler<RegisterCommand, string>, RegisterCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<ChangePasswordCommand, string>, ChangePasswordCommandHandler>();
+builder.Services.AddScoped<ICommandHandler<PasswordReminderCommand, string>, PasswordReminderCommandHandler>();
+
+builder.Services.AddSingleton<IEmailService>(sp => 
+    new MailerSendEmailService("mlsn.xDDD"));
 
 builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -37,6 +41,7 @@ builder.Services.AddScoped<IEventHandler<UserFailedLoginEvent>, UserFailedLoginE
 builder.Services.AddScoped<IEventHandler<UserLockedOutEvent>, UserLockedOutEventHandler>();
 builder.Services.AddScoped<IEventHandler<UserRegisterEvent>, UserRegisterEventHandler>();
 builder.Services.AddScoped<IEventHandler<ChangePasswordEvent>, ChangePasswordEventHandler>();
+builder.Services.AddScoped<IEventHandler<PasswordReminderEvent>, PasswordReminderEventHandler>();
 
 builder.Services.AddAuthentication(options =>
     {

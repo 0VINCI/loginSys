@@ -4,7 +4,7 @@ using projsysinf.Application.Dto;
 
 namespace projsysinf.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AuthController(ICommandDispatcher commandDispatcher) : ControllerBase
     {
@@ -41,7 +41,13 @@ namespace projsysinf.Api.Controllers
             
             return Ok(result);
         }
-
-
+        [HttpPost("passwordReminder")]
+        public async Task<IActionResult> PasswordReminder([FromBody] PasswordReminderDto dto)
+        {
+            var command = new PasswordReminderCommand(dto.Email);
+            var result = await commandDispatcher.SendAsync<PasswordReminderCommand, string>(command);
+            
+            return Ok(result);
+        }
     }
 }
