@@ -5,20 +5,20 @@ import './Login.css';
 import { login } from '../common/services/authService';
 
 const Login = () => {
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-  
+
   const navigate = useNavigate();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      const data = await login(username, password);
-      
-      if (data.userId) {
-        navigate('/report');
+      const { data, status } = await login(email, password);
 
-        setError('');
+      if (status === 200) {
+        navigate('/report');
+        setError(null);
       } else if (data) {
         setError(data.error);
       }
@@ -35,10 +35,10 @@ const Login = () => {
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email</Form.Label>
           <Form.Control
-            type="text"
+            type="email"
             placeholder="Wprowadź email"
-            value={username}
-            onChange={(e:string) => setUsername(e)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
 
@@ -48,31 +48,33 @@ const Login = () => {
             type="password"
             placeholder="Hasło"
             value={password}
-            onChange={(e:string) => setPassword(e)}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
 
         <Button 
           className="button-custom" 
-          onClick={() => {
-            handleSubmit();
-          }}
+          type="submit"
         >
           Zaloguj się
         </Button>
         <Button 
           className="button-custom" 
-          onClick={() => {
-            navigate('/register');
-          }}
+          variant="link"
+          onClick={() => navigate('/register')}
         >
           Zarejestruj się
         </Button>
-
+        <Button 
+          className="button-custom" 
+          variant="link"
+          onClick={() => navigate('/password-reminder')}
+        >
+          Nie pamiętam hasła
+        </Button>
       </Form>
     </div>
   );
 };
 
 export default Login;
-

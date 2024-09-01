@@ -1,21 +1,26 @@
 import { get, post } from './httpClient';
 
-export const login = async (username: string, password: string): Promise<any> => {
-    const response = await post<any>(`/login`, {username, password})
-return response.data; 
+export const login = async (email: string, password: string): Promise<{ data: any, status: number }> => {
+    const response = await post<any>(`/login`, { email, password });
+    return { data: response.data, status: response.status };
 }
 
-export const register = async (username: string, password: string): Promise<any> => {
-    const response = await post<any>(`/register`, {username, password})
-return response.data; 
+export const register = async (email: string, password: string, confirmPassword: string): Promise<{ data: any, status: number }> => {
+    const response = await post<any>(`/register`, { email, password, confirmPassword });
+    return { data: response.data, status: response.status };
 }
 
-export const reminder = async (username: string): Promise<any> => {
-    const response = await post<any>(`/reminder`, username)
-return response.data; 
+export const changePassword = async (email: string, oldPassword: string, newPassword: string): Promise<{ data: any, status: number }> => {
+    const response = await post<any>(`/changePassword`, { email, oldPassword, newPassword });
+    return { data: response.data, status: response.status };
 }
 
-export const logout = async (): Promise<any> => {
+export const passwordReminder = async (email: string): Promise<{ data: any, status: number }> => {
+    const response = await post<any>(`/passwordReminder`, { email });
+    return { data: response.data, status: response.status };
+}
+
+export const logout = async (): Promise<{ data: any, status: number }> => {
     const response = await get<any>('/logout');
-    return response.data;
+    return { data: response.data, status: response.status };
 }
