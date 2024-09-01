@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using profsysinf.Core.Aggregates;
 using profsysinf.Core.Repositories;
-
 namespace projsysinf.Infrastructure.Repositories
 {
     public class UserRepository(ApplicationDbContext context) : IUserRepository
@@ -15,6 +14,13 @@ namespace projsysinf.Infrastructure.Repositories
         {
             return await context.Users
                 .Include(u => u.PasswordHistories)
+                .SingleOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<User> GetByEmailWithLogsAsync(string email)
+        {
+            return await context.Users
+                .Include(u => u.Logs)
                 .SingleOrDefaultAsync(u => u.Email == email);
         }
 
@@ -40,6 +46,5 @@ namespace projsysinf.Infrastructure.Repositories
 
             return lastFailedLog?.Tmstmp;
         }
-
     }
 }

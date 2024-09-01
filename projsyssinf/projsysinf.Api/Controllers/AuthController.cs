@@ -12,7 +12,8 @@ namespace projsysinf.Api.Controllers
         public async Task<IActionResult> Login([FromBody] SignInDto dto)
         {
             var command = new SignInCommand(dto.Email, dto.Password);
-            var token = await commandDispatcher.SendAsync<SignInCommand, string>(command);
+            var token = await commandDispatcher.SendAsync<SignInCommand, SignInResponseDto>(command);
+            var response = await commandDispatcher.SendAsync<SignInCommand, SignInResponseDto>(command);
 
             var cookieOptions = new CookieOptions
             {
@@ -21,9 +22,9 @@ namespace projsysinf.Api.Controllers
                 Expires = DateTime.Now.AddMinutes(60)
             };
 
-            Response.Cookies.Append("AuthToken", token, cookieOptions);
+            Response.Cookies.Append("AuthToken", response.Token, cookieOptions);
 
-            return Ok();
+            return Ok(new { history = response.History });
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
@@ -48,6 +49,16 @@ namespace projsysinf.Api.Controllers
             var result = await commandDispatcher.SendAsync<PasswordReminderCommand, string>(command);
             
             return Ok(result);
+        }
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] LogoutDto dto)
+        {
+            Response.Cookies.Delete("AuthToken");
+
+            var command = new LogoutCommand(dto.UserId);
+            await commandDispatcher.SendAsync(command);
+
+            return Ok(new { message = "User logged out successfully" });
         }
     }
 }

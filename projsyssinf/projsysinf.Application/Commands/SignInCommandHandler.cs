@@ -1,18 +1,20 @@
 using profsysinf.Core.Events;
 using profsysinf.Core.Exceptions;
 using profsysinf.Core.Repositories;
+using projsysinf.Application.Dto;
 using projsysinf.Application.Events;
 using projsysinf.Application.Services;
 
 namespace projsysinf.Application.Commands
 {
     public class SignInCommandHandler(IUserRepository userRepository, IJwtTokenService jwtTokenService,
-            IEventDispatcher eventDispatcher)
-        : ICommandHandler<SignInCommand, string>
+            IEventDispatcher eventDispatcher, ILogService logService
+        )
+        : ICommandHandler<SignInCommand, SignInResponseDto>
     {
-        public async Task<string> HandleAsync(SignInCommand command)
+        public async Task<SignInResponseDto> HandleAsync(SignInCommand command)
         {
-            var user = await userRepository.GetByEmailAsync(command.Email);
+            var user = await userRepository.GetByEmailWithLogsAsync(command.Email);
             if (user == null)
             {
                 throw new UserNotFoundException();
@@ -42,7 +44,15 @@ namespace projsysinf.Application.Commands
                 throw;
             }
 
-            return jwtTokenService.GenerateToken(user.IdUser.ToString(), user.Email, new[] { "User" });
+            var token = jwtTokenService.GenerateToken(user.IdUser.ToString(), user.Email, new[] { "User" });
+            var history = await logService.GetUserLogEntriesAsync(user.IdUser);
+
+            return new SignInResponseDto
+            {
+                Token = token,
+                History = history
+            };
+
         }
     }
 }
