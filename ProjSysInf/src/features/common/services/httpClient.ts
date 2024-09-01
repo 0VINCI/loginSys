@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 
 export const api = {
-    address: 'localhost:5000'
+    address: 'localhost:7132'
 };
 
 

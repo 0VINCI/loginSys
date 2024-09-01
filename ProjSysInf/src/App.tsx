@@ -1,6 +1,9 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import PrivateRoute from './features/common/privateRoute/PrivateRoute'
+import Login from './features/login/Login'
 import Register from './features/register/Register'
+import Reminder from './features/reminder/Reminder'
 
 function App() {
 

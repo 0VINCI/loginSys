@@ -1,68 +1,65 @@
 import React, { useState } from 'react';
 import { Form, Alert, Button } from 'react-bootstrap';
-import { userRegister } from '../../../services/registerService'; 
+import { register } from '../common/services/authService'; 
 import { useNavigate } from 'react-router-dom';
-import Logo from '../../Logo/Logo';
 import './Register.css';
 
-const Register = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const Register: React.FC = () => {
+  const [email, setUsername] = useState('');
+  const [password, setEmail] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
-  const handleSubmit = async () => {
-
-    if (password !== confirmPassword) {
-      setError('Hasła nie są takie same');
-      setSuccess('');
-      return;
-    }
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); 
 
     try {
-      const user = { login: username, password };
-      const response = await userRegister(user);
-
+      const data = { email, password, confirmPassword };
+      const response = await register(data);
       if (response.status === 200) {
-        setError('');
+        setError(null);
         setSuccess('Poprawnie zarejestrowano. Zostaniesz przekierowany do strony logowania');
         setTimeout(() => {
           navigate('/login');
         }, 3000);
       } else if (response.status === 409) {
         setError('Użytkownik już istnieje. Zaloguj się lub przypomnij hasło');
-        setSuccess('');
+        setSuccess(null);
+      } else if (response.status === 400) {
+        setError('Hasła nie są takie same!');
+        setSuccess(null);
       } else {
         setError('Wystąpił nieoczekiwany błąd.');
-        setSuccess('');
+        setSuccess(null);
       }
     } catch (error: any) {
       if (error.response && error.response.status === 409) {
         setError('Użytkownik już istnieje.');
+      } else if (error.response && error.response.status === 400) {
+        setError('Użytkownik już istnieje.');
       } else {
         setError('Nie udało się zarejestrować. Spróbuj ponownie.');
       }
-      setSuccess('');
+      setSuccess(null);
     }
-  };
-
+  }
+  
   return (
     <div className="app-container">
       <h2>Rejestracja</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">{success}</Alert>}
       <Form onSubmit={handleSubmit}>
-        <Logo />
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email</Form.Label>
           <Form.Control
             type="text"
             placeholder="Wprowadź login"
-            value={username}
-            onChange={(e:any) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </Form.Group>
 
@@ -72,7 +69,7 @@ const Register = () => {
             type="password"
             placeholder="Hasło"
             value={password}
-            onChange={(e:any) => setPassword(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
 
@@ -82,14 +79,13 @@ const Register = () => {
             type="password"
             placeholder="Powtórz hasło"
             value={confirmPassword}
-            onChange={(e:any) => setConfirmPassword(e.target.value)}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </Form.Group>
 
         <Button 
           className="button-custom" 
-          onClick={() => {
-          }}
+          type="submit"
         >
           Zarejestruj się
         </Button>
