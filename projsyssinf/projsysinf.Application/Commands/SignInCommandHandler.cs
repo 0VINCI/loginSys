@@ -22,7 +22,7 @@ namespace projsysinf.Application.Commands
 
             var lastFailedLogin = await userRepository.GetLastFailedLoginAsync(user.IdUser);
 
-            if (user.FailedLoginAttempts >= 2 && lastFailedLogin.HasValue && lastFailedLogin.Value.AddMinutes(3) > DateTime.UtcNow)
+            if (user.FailedLoginAttempts >= 3 && lastFailedLogin.HasValue && lastFailedLogin.Value.AddMinutes(3) > DateTime.UtcNow)
             {
                 var lockedOutEvent = new UserLockedOutEvent(user.IdUser);
                 await eventDispatcher.DispatchAsync(lockedOutEvent);
