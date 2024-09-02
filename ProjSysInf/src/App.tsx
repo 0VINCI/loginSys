@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
-import PrivateRoute from './features/common/privateRoute/PrivateRoute'
 import Login from './features/login/Login'
 import Register from './features/register/Register'
 import Reminder from './features/reminder/Reminder'
+import Report from './features/Report/Report'
+import ChangePassword from './features/ChangePassword/ChangePassword'
 
 function App() {
 
@@ -11,10 +12,11 @@ function App() {
     <>
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<PrivateRoute><Register /></PrivateRoute>} />
-        <Route path="/report" element={<PrivateRoute><Report /></PrivateRoute>} />
-        <Route path="/reminder" element={<PrivateRoute><Reminder /></PrivateRoute>} />
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/report" element={<Report />} />
+        <Route path="/password-reminder" element={<Reminder />} />
+        <Route path="/change-password" element={<ChangePassword />} />
       </Routes>
     </BrowserRouter>
     </>

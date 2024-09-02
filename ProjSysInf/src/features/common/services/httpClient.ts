@@ -1,9 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 
 export const api = {
-    address: 'localhost:7132'
+    address: 'https://localhost:7132/auth'
 };
-
 
 const instance = axios.create({
     baseURL: api.address,
@@ -11,35 +10,13 @@ const instance = axios.create({
         'Accept': "*/*",
         "Content-Type": "application/json",
     },
-    withCredentials: true
+    withCredentials: true 
 });
 
-
 export const get = async function <T>(request: string): Promise<AxiosResponse<T>> {
-    try {
-        return await instance.get<T>(request);
-    } catch (err: any) {
-        if (axios.isAxiosError(err)) {
-            return Promise.reject(err.message);
-        }
-        return Promise.reject("Wystąpił nieoczekiwany błąd!");
-    }
+    return await instance.get<T>(request);
 };
 
 export const post = async function <T>(request: string, params: any = null): Promise<AxiosResponse<T>> {
-    try {
-        const payload = params ? JSON.stringify(params) : null;
-        const response = await instance.post<T>(request, payload, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        return response;
-    } catch (err: unknown) {
-        if (axios.isAxiosError(err)) {
-            return Promise.reject(err.message);
-        }
-        return Promise.reject("Wystąpił nieoczekiwany błąd!");
-    }
+    return await instance.post<T>(request, params);
 };
-

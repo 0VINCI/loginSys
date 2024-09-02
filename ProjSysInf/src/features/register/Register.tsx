@@ -19,11 +19,13 @@ const Register: React.FC = () => {
     try {
       const data = { email, password, confirmPassword };
       const response = await register(data);
-      if (response.status === 200) {
+      if (response.status < 400) {
         setError(null);
         setSuccess('Poprawnie zarejestrowano. Zostaniesz przekierowany do strony logowania');
+        console.log(success); 
+                
         setTimeout(() => {
-          navigate('/login');
+          navigate('/');
         }, 3000);
       } else if (response.status === 409) {
         setError('Użytkownik już istnieje. Zaloguj się lub przypomnij hasło');
@@ -39,55 +41,69 @@ const Register: React.FC = () => {
       if (error.response && error.response.status === 409) {
         setError('Użytkownik już istnieje.');
       } else if (error.response && error.response.status === 400) {
-        setError('Użytkownik już istnieje.');
+        setError('Hasła nie są takie same!');
       } else {
         setError('Nie udało się zarejestrować. Spróbuj ponownie.');
       }
       setSuccess(null);
     }
   }
+
+  const handleBack = () => {
+    navigate('/'); 
+  }
   
   return (
-    <div className="app-container">
-      <h2>Rejestracja</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
-      {success && <Alert variant="success">{success}</Alert>}
+    <div className="register-container">
+      <h2 className="register-heading">Rejestracja</h2>
+      {error && <Alert variant="danger" className="register-alert">{error}</Alert>}
+      {success && <Alert variant="success" className="register-alert">{success}</Alert>}
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email</Form.Label>
+          <Form.Label className="register-label">Email</Form.Label>
           <Form.Control
             type="text"
             placeholder="Wprowadź login"
             value={email}
             onChange={(e) => setUsername(e.target.value)}
+            className="register-input"
           />
         </Form.Group>
 
         <Form.Group controlId="formBasicPassword">
-          <Form.Label>Hasło</Form.Label>
+          <Form.Label className="register-label">Hasło</Form.Label>
           <Form.Control
             type="password"
             placeholder="Hasło"
             value={password}
             onChange={(e) => setEmail(e.target.value)}
+            className="register-input"
           />
         </Form.Group>
 
         <Form.Group controlId="formConfirmPassword">
-          <Form.Label>Powtórz Hasło</Form.Label>
+          <Form.Label className="register-label">Powtórz Hasło</Form.Label>
           <Form.Control
             type="password"
             placeholder="Powtórz hasło"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            className="register-input"
           />
         </Form.Group>
 
         <Button 
-          className="button-custom" 
+          className="register-button"
           type="submit"
         >
           Zarejestruj się
+        </Button>
+        <Button 
+          className="register-button register-back-button"
+          type="button"
+          onClick={handleBack} 
+        >
+          Wróć
         </Button>
       </Form>
     </div>

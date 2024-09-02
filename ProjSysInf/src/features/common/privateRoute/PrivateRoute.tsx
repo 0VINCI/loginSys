@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { isAuthenticated } from './helpers/isAuthenticated';
+import { isAuthenticated } from './isAuth';
 
 interface PrivateRouteProps {
   children: ReactNode;

@@ -1,0 +1,142 @@
+/* Stylizacja dla kontenera aplikacji */
+.app-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+    padding: 20px;
+  }
+  
+  /* Stylizacja dla karty logowania */
+  .card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  /* Nagłówek w karcie */
+  .card h2 {
+    text-align: center;
+    color: #333333;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+  
+  /* Stylizacja dla grupy formularza */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  /* Pola formularza */
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  /* Stylizacja przycisku */
+  .button-custom {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button-custom:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Stylizacja linków */
+  .link-custom {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .link-custom:hover {
+    text-decoration: underline;
+  }
+  
+  /* Stylizacja dla alertów */
+  .alert {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+  }
+  
+  .alert-danger {
+    background-color: #dc3545;
+  }
+  
+  /* Stylizacja dla dolnego tekstu */
+  .card-footer-text {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #333333;
+  }
+  
+  .card-footer-text span {
+    margin: 0 5px;
+  }
+  
+  /* Stylizacja dla subtelnego przycisku */
+.button-link {
+    width: 100%;
+    padding: 10px;
+    background-color: transparent;
+    color: #007bff;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: underline;
+    margin-top: 10px;
+  }
+  
+  .button-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+  }
+  
+  /* Stylizacja dla dolnego tekstu */
+  .card-footer-text {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #333333;
+  }
+  
+  .card-footer-text span {
+    margin: 0 5px;
+  }
+  
+  /* Stylizacja dla linku */
+  .link-custom {
+    cursor: pointer;
+    color: #007bff;
+    font-size: 14px;
+  }
+  
+  .link-custom:hover {
+    text-decoration: underline;
+    color: #0056b3;
+  }
+  
