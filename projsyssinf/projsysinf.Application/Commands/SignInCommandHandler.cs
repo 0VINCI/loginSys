@@ -49,6 +49,7 @@ namespace projsysinf.Application.Commands
 
             return new SignInResponseDto
             {
+                UserId = user.IdUser,
                 Token = token,
                 History = history
             };

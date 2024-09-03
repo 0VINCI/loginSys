@@ -5,7 +5,7 @@ using profsysinf.Core.Exceptions;
 
 namespace projsysinf.Api.Controllers
 {
-    [Route("")]
+    [Route("auth")]
     [ApiController]
     public class AuthController(ICommandDispatcher commandDispatcher) : ControllerBase
     {
@@ -21,12 +21,18 @@ namespace projsysinf.Api.Controllers
                 {
                     HttpOnly = true,
                     Secure = true,
-                    Expires = DateTime.Now.AddMinutes(60)
+                    Expires = DateTime.Now.AddMinutes(60),
+                    SameSite = SameSiteMode.None,
+
                 };
 
                 Response.Cookies.Append("AuthToken", response.Token, cookieOptions);
 
-                return Ok(new { history = response.History });
+                return Ok(new 
+                { 
+                    userId = response.UserId, 
+                    history = response.History 
+                });
             }
             catch (UserNotFoundException ex)
             {
